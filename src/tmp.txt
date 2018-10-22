@@ -1,0 +1,30 @@
+
+Källor med information kring kodningen
+
+React routerinformation
+https://reacttraining.com/react-router/web/example/basic
+
+React official
+https://reactjs.org/docs/create-a-new-react-app.html
+
+First SPA with reactrouter
+https://www.kirupa.com/react/creating_single_page_app_react_using_react_router.htm
+
+material design, ui and io
+
+Reset user
+http://192.168.0.112/people/reset_credentials?sid=0123456789
+
+Auth example with the secureRoute component
+https://auth0.com/blog/react-router-4-practical-tutorial/
+
+https://auth0.com/blog/react-tutorial-building-and-securing-your-first-app/
+
+Tutorial, with public/private parts
+https://www.sitepoint.com/react-router-v4-complete-guide/
+
+Codeexamples
+https://flaviocopes.com/react-example-githubusers/
+
+How to fetch data in React.
+https://www.robinwieruch.de/react-fetching-data/#react-fetch-data-test-testing
