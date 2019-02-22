@@ -1,0 +1,154 @@
+* Profile *
+name: handelsbanken_sandbox
+app_name: "GM test1"
+client_id: "76fc4f35-6883-462c-8e17-7946ab44c70c"
+client_secret: "NA"
+authorization: MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI1
+authorization: MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI2
+authorization: MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI3
+psu-ip-address:
+tpp_request-id:
+tpp-transaction-id:
+
+
+------- Comments
+
+I used a UUID generator for the UUID values for tpp-*
+
+curl --request GET \
+  --url https://sandbox.handelsbanken.com/openbanking/psd2/v1/accounts \
+  --header 'accept: application/json' \
+  --header 'authorization: REPLACE_THIS_VALUE' \
+  --header 'psu-ip-address: REPLACE_THIS_VALUE' \
+  --header 'tpp-request-id: REPLACE_THIS_VALUE' \
+  --header 'tpp-transaction-id: REPLACE_THIS_VALUE' \
+  --header 'x-ibm-client-id: REPLACE_THIS_KEY'
+
+  curl --request GET \
+    --url https://sandbox.handelsbanken.com/openbanking/psd2/v1/accounts \
+    --header 'accept: application/json' \
+    --header 'authorization: MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI1' \
+    --header 'psu-ip-address: 158.174.4.9' \
+    --header 'tpp-request-id: 8173c2f7-5893-4480-a76e-a44634bd518f' \
+    --header 'tpp-transaction-id: fc3eb8c7-3d5e-44ba-93fd-a136b2c5d1f9' \
+    --header 'x-ibm-client-id: 76fc4f35-6883-462c-8e17-7946ab44c70c'
+
+Verbose ger:
+    GET /openbanking/psd2/v1/accounts HTTP/1.1
+   > Host: sandbox.handelsbanken.com
+   > User-Agent: curl/7.54.0
+   > accept: application/json
+   > authorization: MTQ0NjJkZmQ5OTM2NDE1ZTZjNGZmZjI1
+   > psu-ip-address: 158.174.4.9
+   > tpp-request-id: 8173c2f7-5893-4480-a76e-a44634bd518f
+   > tpp-transaction-id: fc3eb8c7-3d5e-44ba-93fd-a136b2c5d1f9
+   > x-ibm-client-id: 76fc4f35-6883-462c-8e17-7946ab44c70c
+
+{"accounts":[
+  {"accountId":"5a72e1531b6586f34a0d7ce3",
+  "iban":"SE5460000000000403333911",
+  "currency":"SEK",
+  "accountType":"Allkortskonto",
+  "name":"",
+  "bban":"403333911",
+  "clearingNumber":"6295",
+  "bic":"HANDSESS",
+  "_links":{
+      "balances":"/accounts/5a72e1531b6586f34a0d7ce3/balances",
+      "transactions":"/accounts/5a72e1531b6586f34a0d7ce3/transactions"
+      }},
+  {"accountId":"5a72e1531b6586f34a0d7ce4",
+    "iban":"SE7460000000000401975231",
+    "currency":"SEK",
+    "accountType":"Allkonto",
+    "name":"Lönekonto",
+    "bban":"401975231",
+    "clearingNumber":"6295",
+    "bic":"HANDSESS",
+    "_links":{
+      "balances":"/accounts/5a72e1531b6586f34a0d7ce4/balances",
+      "transactions":"/accounts/5a72e1531b6586f34a0d7ce4/transactions"
+      }
+    }
+  ]
+}
+
+
+* Profile *
+name: swedbank_sandbox
+app_name: gm_test1
+client_id: l71c07d4a09f2d4367904e7dd1be1f2ca6
+client_secret:
+oauth_callback_url: https://www.gt16.se/people/code.html
+oauth_scope: PSD2sandbox
+methods:
+
+
+------ Comments
+swedbank sandbox API
+
+curl --request GET --url 'https://psd2.api.swedbank.com/psd2/authorize?bic=SANDSESS&state=somstring&client_id=l71c07d4a09f2d4367904e7dd1be1f2ca6&redirect_uri=https://www.gt16.se:3000/people/code.html&response_type=code&scope=PSD2sandbox' --header 'date: 2019-01-05'
+
+
+
+https://www.gt16.se:3000/people/code.html
+
+{
+name: "Swedbank_sandbox",
+auth_url: "https://psd2.api.swedbank.com/psd2/authorize?bic=SANDSESS&state=somstring&client_id=l71c07d4a09f2d4367904e7dd1be1f2ca6&redirect_uri=https://www.gt16.se:3000/people/code.html&response_type=code&scope=PSD2sandbox"
+redirect_url: "http://www.gt16.se:3000/people/code.html",
+validate_url:  "https://www.googleapis.com/drive/v3/about?fields=user&access_token=",
+client_id: "l71c07d4a09f2d4367904e7dd1be1f2ca6",
+client_secret:  "bba0d52e7c99430aa1c2746a8f5484f1",
+get_token_url: "https://psd2.api.swedbank.com/psd2/token?grant_type=authorization_code&client_id=<your_client_id>&client_secret=<your_client_secret>&code=<access_code>&redirect_uri=https://<your_redirect_uri>",
+grant_type: "authorization_code"
+}
+
+Not working!!!
+curl \
+  https://psd2.api.swedbank.com:443/sandbox/v1/consents?bic=SANDSESS \
+  --header 'authorization: Bearer dummyToken' \
+  --header 'X-Request-ID: 8173c2f7-5893-4480-a76e-a44634bd518f' \
+  --header 'date: 2019-02-19' \
+  -d ""
+
+------ End
+
+* Profile *
+name: google_people
+app_name: peoplerelations-216708
+client_id: 699879259881-eq9s9upe6upsm090hk2hbqp0k3dps49m.apps.googleusercontent.com
+client_secret: a2Wu7cftMRl0_KJ2uvk-vinP
+callback_url: https://www.gt16.se:3000/people/code.html
+oauth_scope: https://www.googleapis.com/auth/drive.metadata.readonly
+methods:
+
+------ Comments
+Drive API
+Documentation
+https://developers.google.com/drive/api/v3/reference/files/list
+
+GET https://www.googleapis.com/drive/v3/files
+
+
+Contacts API
+Documentation
+https://developers.google.com/people/v1/read-people
+
+{
+name: "Google",
+auth_url: "https://accounts.google.com/o/oauth2/v2/auth?response_type=code&clie
+nt_id=699879259881-eq9s9upe6upsm090hk2hbqp0k3dps49m.apps.googleusercontent.com&redirect_uri=http://www.gt16.se:3000/people/code.html&scope=https://w
+ww.googleapis.com/auth/drive.metadata.readonly&state=Google,
+redirect_url: ""http://www.gt16.se:3000/people/code.html",
+validate_url:  "https://www.googleapis.com/drive/v3/about?fields=user&access_token=",
+client_id: "699879259881-eq9s9upe6upsm090hk2hbqp0k3dps49m.apps.googleusercontent.com",
+client_secret:  "a2Wu7cftMRl0_KJ2uvk-vinP",
+get_token_url: "https://www.googleapis.com/oauth2/v4/token",
+grant_type: "authorization_code"
+}
+------ End
+
+http://www.gt16.se/people/oauth2_callback?
+code=4/7gDOOmdrJZAAhe0DlNphx9Xeh1vb5aaFYhhyIvfBZxeuDYgbMnmM0KGsqiI0pqbCiZ6wjRsFVWAOJJHZJyA_3Rs
+&scope=https://www.googleapis.com/auth/drive.metadata.readonly
