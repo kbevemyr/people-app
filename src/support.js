@@ -1,3 +1,4 @@
+
 function makeRequest(opts) {
   // Return a new promise.
   return new Promise(function(resolve, reject) {
@@ -55,10 +56,14 @@ function makeJSONRequest(opts) {
   return makeRequest(opts).then(JSON.parse);
 }
 
+// get_user
+// add_credentials redirect_url
+// verify_credentials
+// reset_credentials
 export function serverGet(key, params) {
     var opts =
         { method: "GET",
-          url: "http://"+window.location.hostname+"/people/"+key
+          url: "https://"+window.location.hostname+"/people/"+key
         };
 
     if (params) {
@@ -71,20 +76,30 @@ export function serverGet(key, params) {
     return makeJSONRequest(opts);
 }
 
-export function serverPost(key, obj) {
+
+export function serverPost(key, params) {
+  console.log("serverPost: "+key);
+
   var opts =
          { method: "POST",
-           url: "http://"+window.location.hostname+"/people/"+key,
-           headers: [ "Content-Type: application/json" ],
-           params: JSON.stringify(obj)
+           url: "https://"+window.location.hostname+"/people/"+key,
+           contentType: "application/json",
           };
+
+  if (params) {
+    opts["params"] = JSON.stringify(params);
+  }
+
+  console.log("serverPost.opts: "+JSON.stringify(opts));
+
   return makeJSONRequest(opts);
 }
+
 
 export function serverLogin(username, password, remember) {
   var opts =
          { method: "GET",
-           url: "http://"+window.location.hostname+"/people/login",
+           url: "https://"+window.location.hostname+"/people/login",
            query:  ("user="+username+
                     "&password="+encodeURIComponent(password)+
                     "&remember="+remember+

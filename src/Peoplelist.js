@@ -1,71 +1,56 @@
 import React, {Component} from "react";
+import { Link, withRouter } from "react-router-dom";
+import { connect } from 'react-redux';
+import { getMyFiles } from './store/actions';
 
-import  { serverGet } from "./support.js";
 //import { Route, Link, withRouter } from "react-router-dom";
 
-import authFlowService from './AuthService';
-
-import PList from '@material-ui/core/List';
-import PItem from '@material-ui/core/ListItem';
-import PItemText from '@material-ui/core/ListItemText';
-//import PItemIcon from '@material-ui/core/ListItemIcon';
-
-function getFiles(obj) {
-  //const usersid = document.cookie.replace(/(?:(?:^|.*;\s*)sid\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-  const usersid = authFlowService.state.sid;
-  var ru = window.location.origin+"/private";
-
-  console.log("Peoplelist.getMyUser: sid = "+usersid);
-  console.log("Peoplelist.getMyUser: redirect_url = "+ru);
-
-  //serverGet("get_user", {sid: usersid, redirect_url: ru} ).then(
-  serverGet("get_files", {sid: usersid} ).then(
-    function(s) {
-      if (s.status === "error" && s.reason === "unknown sid") {
-        console.log("login needed");
-        window.location = "#/Login";
-        return;
-      }
-      else if (s.status === "error" && s.reason === "need oauth2") {
-        console.log("Peoplelist.getFiles: need oauth2");
-        window.location = s.auth_url;
-      }
-      else {
-          console.log(JSON.stringify(s, undefined, 2));
-          obj.setState({data: s});
-      }
-    }
-  );
-}
-
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import StarIcon from '@material-ui/icons/Star';
 
 class Peoplelist extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      gotlist: false,
-      data: [],
-    };
-  }
-
-  componentDidMount() {
-    getMyFiles(this);
+    this.props.getTheFiles(this.props.sid);
   }
 
   render() {
     return (
       <div>
-      <pre>{JSON.stringify(this.state.data, undefined,2)}</pre>
-      <PList>
-        <PItem>
-          <PItemText inset primary="Martin">
-
-          </PItemText>
-        </PItem>
-      </PList>
+      <List>
+        {this.props.files.map(x =>
+          (
+            <ListItem>
+              <ListItemIcon><StarIcon /></ListItemIcon>
+              <ListItemText inset primary={x.name} />
+            </ListItem>
+          ))}
+      </List>
       </div>
     );
   }
 }
 
-export default Peoplelist;
+
+// Store handling
+
+const mapStateToProps = state => ({
+  sid: state.sid,
+  files: state.files,
+});
+
+const mapDispatchToProps = dispatch => ({
+    getTheFiles: (sid) => {
+      dispatch(getMyFiles(sid));
+  },
+});
+
+const PeoplelistContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Peoplelist);
+
+export default withRouter(PeoplelistContainer);

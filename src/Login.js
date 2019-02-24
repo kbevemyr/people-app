@@ -15,10 +15,11 @@ import Switch from '@material/react-switch';
 
 import './Login.css';
 
-import { serverLogin } from './support.js';
 import { Redirect, withRouter } from 'react-router-dom';
 
-import authFlowService from './AuthService';
+import { connect } from 'react-redux';
+
+import { loginUser } from './store/actions';
 
 //import {MDCRipple} from '@material/ripple';
 //import {MDCTopAppBar} from '@material/top-app-bar/index';
@@ -30,6 +31,7 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.handleLoginEvent = this.handleLoginEvent.bind(this);
+    this.handleLoginKatrinEvent = this.handleLoginKatrinEvent.bind(this);
     this.state = {
       username: '',
       password: '',
@@ -39,38 +41,24 @@ class Login extends Component {
   }
 
   handleCancelEvent(e) {
-    console.log("user clicked Cancel button");
+    console.log("Login.user clicked Cancel button");
     return;
   }
 
-  handleLoginEvent(e, callback) {
-    console.log("Login.user to login is "+this.state.username+" ("+this.state.password+") ");
+  handleLoginEvent(e) {
+    const { username, password, rememberme } = this.state;
+    console.log("handleLoginEvent. creds "+ username+"/"+password);
+    this.props.onLogin(this.state);
+  }
 
-    authFlowService.authenticate(() => { this.setState({ redirectToPreviousRoute: true}) });
-
-    serverLogin(this.state.username, this.state.password, this.state.rememberme).then(
-      function(res) {
-        console.log("got: "+ JSON.stringify(res));
-        if (res.status === "error" && res.reason === "need oauth2") {
-          console.log("Login.oauth2 needed.");
-          window.location = res.auth_url;
-        }
-        else if (res.status === "error") {
-          console.log("Login.login failed:"+res.reason);
-          //TODO - följa upp error reason, tex fel lösenord
-        }
-        else {
-          //const expiresDate = new Date('31 Dec 2018 00:00:00 PDT');
-          console.log("Login.login successful: sid="+res.sid);
-          //console.log("Login.next url: "+next_url);
-          //callback(res.sid);
-          //document.cookie = "sid="+res.sid+" ;path=/"+" ;expires="+expiresDate.toUTCString();
-          authFlowService.state.sid = res.sid;
-          authFlowService.authenticate();
-          //window.location = "/#/private";
-          //document.location.hash = "#/private";
-        }
-      });
+  handleLoginKatrinEvent(e) {
+    const katrin_cred = {
+      username: "katrin",
+      password: "test",
+      rememberme: false,
+    };
+    this.setState(katrin_cred);
+    this.props.onLogin(this.state);
   }
 
   render() {
@@ -78,15 +66,21 @@ class Login extends Component {
     const { redirectToPreviousRoute } = this.state;
 
     if (redirectToPreviousRoute) {
-      console.log("Main.render "+from.pathname);
+      console.log("Login.render redirect path "+from.pathname);
       return (<Redirect to={from} />);
     }
 
-    console.log("Login.render "+this.props.location.state);
-
     return (
+
       <div className="Login">
         <form>
+          <div className='button-container'>
+            <Button className='button-alternate' raised
+              onClick={(e) => this.handleLoginKatrinEvent(e)}
+              >
+              Katrin
+            </Button>
+          </div>
           <TextField
             label='Username'
             id='username'
@@ -134,7 +128,7 @@ class Login extends Component {
             Cancel
           </Button>
           <Button className='button-alternate' raised
-            onClick={(e) => this.handleLoginEvent(e, this.props.callback)}
+            onClick={(e) => this.handleLoginEvent(e)}
           >
             Login
           </Button>
@@ -145,4 +139,21 @@ class Login extends Component {
   }
 }
 
-export default withRouter(Login);
+// Store handling
+
+const mapStateToProps = state => ({
+  username: state.login_name
+});
+
+const mapDispatchToProps = dispatch => ({
+    onLogin: (creds) => {
+      dispatch(loginUser(creds));
+  },
+});
+
+const LoginContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);
+
+export default withRouter(LoginContainer);

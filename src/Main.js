@@ -1,6 +1,5 @@
 import React, {Component} from "react";
-//import { Switch, Route, NavLink, Redirect } from "react-router-dom";
-import { Route, NavLink, Redirect } from "react-router-dom";
+import { Route, NavLink, withRouter } from "react-router-dom";
 
 import '@material/react-top-app-bar/dist/top-app-bar.css';
 import '@material/react-material-icon/dist/material-icon.css';
@@ -8,43 +7,34 @@ import MDCTopAppBar from '@material/react-top-app-bar';
 //import MaterialIcon from '@material/react-material-icon';
 //import MaterialIcon2 , {colorPalette} from 'material-icon-react';
 
-import authFlowService from './AuthService';
+import OAuthLogin from './OAuthLogin';
 
 import Public from "./Public";
 import Login from "./Login";
 import Private from "./Private";
 
-const SecretRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-      authFlowService.isAuthenticated() ?
-      <Component {...props} />
-      :
-      <Redirect to={{
-          pathname: '/login',
-          state: { from: props.location }
-        }} />
-    )} />
-);
+import { connect } from 'react-redux';
+//import { loginUser } from './store/actions';
 
 class Main extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      user: '',
-      sid: '',
-      gotOauth2: false,
-    };
+    this.handleOauthLoginEvent = this.handleOauthLoginEvent.bind(this);
+    this.handleOauthCompleteEvent = this.handleOauthCompleteEvent.bind(this);
+  }
+
+  handleOauthCompleteEvent() {
+    console.log("Main.handleOauthCompleteEvent");
+
+  }
+
+  handleOauthLoginEvent(url) {
+    console.log("Main.handleOauthLoginEvent redirectURL = "+url);
+
   }
 
   signOut() {
-    authFlowService.logout();
-    this.props.history.replace('/');
-  }
 
-  handleServerMsg(msg) {
-    let result = JSON.parse(data);
-    // Check if msg is OAUTH2 callback, then update the login-toggle.
-    this.setState({gotOauth2: true});
   }
 
   render() {
@@ -64,18 +54,39 @@ class Main extends Component {
           <div className="content mdc-top-app-bar--fixed-adjust">
             <Route path="/public" component={Public} />
             <Route path="/login" component={Login} />
-            <SecretRoute path="/private" component={Private} />
+            <Route path="/private" render={() =>
+              this.props.isAuthenticated ? (
+                  <Private />
+                ) : (
+                  <Login />
+                )
+              } />
           </div>
 
-          <div>
-            <strong>got message from server: {this.state.gotOauth2}</strong>
+          {this.props.inOauth > 0 && (
+            <OAuthLogin url={this.props.oauth_urls[0].oauth_url} />
+          )}
 
-            <WebSocket url='ws://musen.bevemyr.com:8888/people/webchannel/'
-              onMessage={this.handleServerMsg.bind(this)}/>
-          </div>
-        </div>
+      </div>
+
     );
   }
 }
 
-export default Main;
+
+function mapStateToProps(state) {
+  const { isAuthenticated, errorMessage , inOauth , oauth_urls } = state;
+
+  return {
+    isAuthenticated,
+    errorMessage,
+    inOauth,
+    oauth_urls,
+  };
+}
+
+const MainContainer = connect(
+  mapStateToProps
+)(Main);
+
+export default withRouter(MainContainer);
